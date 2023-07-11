@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  api:
+    build: .
+    container_name: fastapi-tutorial
+    ports:
+      - "8000:80"
+    volumes:
+      - ./api:/api
+    env_file:
+      - ./api/.env
+
+  db:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: usertest
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: dbtest
+    ports:
+      - "5434:5434"
+

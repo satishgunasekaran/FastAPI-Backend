@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+databases
+sqlalchemy
+pydantic
+asyncpg
+pydantic-settings
+psycopg2-binary
+starlette
