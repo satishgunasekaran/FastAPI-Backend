@@ -7,3 +7,7 @@ asyncpg
 pydantic-settings
 psycopg2-binary
 starlette
+passlib
+bcrypt
+python-multipart
+PyJWT
