@@ -3,6 +3,7 @@ from api.auth import schema
 from api.auth import crud
 from api.utils import cryptoUtil, jwtUtil, constantUtil
 from fastapi.security import OAuth2PasswordRequestForm
+import uuid
 
 router = APIRouter(
     
@@ -51,4 +52,51 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     }
 
          
+@router.post("/auth/forgot-password")
+async def forgot_password(request: schema.ForgotPassword):
+    # Check user existed
+    result = await crud.get_user(request.email)
+    if not result:
+        raise HTTPException(status_code=404,
+                            detail="User not found.")
     
+    # Create reset code and save in the database
+    reset_code = str(uuid.uuid1())
+    await crud.create_reset_code(request.email, reset_code)
+    
+    # Sending Mail
+    subject = "Hello Coder"
+    recipient = [request.email]
+    
+    message = """
+    <!DOCTYPE html>
+    <html>
+    <title>Reset Password</title>
+    <body>
+    <div style="width:100%;font-family: monospace;">
+        <h1>Hello, {0:}</h1>
+        <p>Someone has requested a link to reset your password. If you requested this, you can change your password through the button below.</p>
+        <a href="http://127.0.0.1:8000/user/forgot-password?reset_password_token={1:}" style="box-sizing:border-box;border-color:#1f8feb;text-decoration:none;background-color:#1f8feb;border:solid 1px #1f8feb;border-radius:4px;color:#ffffff;font-size:16px;font-weight:bold;margin:0;padding:12px 24px;text-transform:capitalize;display:inline-block" target="_blank">Reset Your Password</a>
+        <p>If you didn't request this, you can ignore this email.</p>
+        <p>Your password won't change until you access the link above and create a new one.</p>
+    </div>
+    </body>
+    </html>
+    """.format(request.email, reset_code)
+    
+    
+    
+    
+    
+    
+    return reset_code
+
+
+
+
+
+
+
+
+
+

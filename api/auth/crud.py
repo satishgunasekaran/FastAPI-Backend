@@ -10,6 +10,10 @@ def create_user(user: schema.UserCreate):
     
     return database.execute(query, values={"email": user.email, "password": user.password, "fullname": user.fullname})
     
+def create_reset_code(email: str, reset_code: str):
+    query = """INSERT INTO py_codes VALUES (nextval('code_id_seq'), 
+             :email, :reset_code, '1', now() at time zone 'UTC'
+              )"""
     
-    
+    return database.execute(query, values={'email': email, 'reset_code':reset_code})
     
