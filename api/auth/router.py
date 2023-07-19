@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from api.auth import schema
 from api.auth import crud
-from api.utils import cryptoUtil, jwtUtil, constantUtil
+from api.utils import cryptoUtil, jwtUtil, constantUtil, emailUtil
 from fastapi.security import OAuth2PasswordRequestForm
 import uuid
 
@@ -84,12 +84,14 @@ async def forgot_password(request: schema.ForgotPassword):
     </html>
     """.format(request.email, reset_code)
     
+    await emailUtil.send_email(subject, recipient, message)
     
     
-    
-    
-    
-    return reset_code
+    return {
+        "code": 200,
+        "message": "We have sent an email with instructions to reset your password.",
+        "reset_code": reset_code
+    }
 
 
 
